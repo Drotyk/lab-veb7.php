@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Завдання 3 - Форма AJAX</title>
+</head>
+<body>
+    <h2>Анкета (AJAX Submit)</h2>
+    <form id="myForm">
+        <label>Ім'я: <input type="text" name="username" required></label><br><br>
+        <label>Email: <input type="email" name="email" required></label><br><br>
+        <button type="submit">Відправити</button>
+    </form>
+
+    <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Зупиняємо стандартне перезавантаження сторінки
+
+            // Збираємо дані форми
+            var formData = new FormData(this);
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Виводимо відповідь сервера у блок div
+                    document.getElementById("result").innerHTML = "Відповідь сервера: " + this.responseText;
+                    document.getElementById("result").style.color = "green";
+                }
+            };
+
+            // POST запит на сервер 
+            xhttp.open("POST", "submit.php", true);
+            // Відправка даних форми 
+            xhttp.send(formData);
+        });
+    </script>
+</body>
+</html>

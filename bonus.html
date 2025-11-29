@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Бонус - Star Wars API</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        button { margin: 5px; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>Персонажі Star Wars (API VNTU)</h1>
+
+    <button id="loadBtn">Завантажити дані</button>
+    <button id="sortNameBtn">Сортувати за ім'ям</button>
+    <button id="sortAffBtn">Сортувати за фракцією</button>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ім'я (Name)</th>
+                <th>Фракція (Affiliation)</th>
+                <th>Ранг</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+    <script>
+        // URL API з методички 
+        const apiUrl = "http://lab.vntu.org/api-server/lab7.php";
+
+        // Функція для завантаження даних
+        function loadData(sortParam = "") {
+            // Формуємо дані для відправки (параметри сортування)
+            let requestData = {};
+            if (sortParam) {
+                requestData.sort = sortParam; // 'name' або 'affiliation'
+            }
+
+            console.log("Запит до: " + apiUrl + " з параметром: " + sortParam);
+
+            // Використання jQuery $.get або $.ajax 
+            $.ajax({
+                url: apiUrl,
+                method: "GET",
+                data: requestData, // jQuery сам додасть ?sort=name до URL
+                dataType: "json",  // Очікуємо JSON
+                success: function(data) {
+                    // Очищаємо таблицю перед оновленням
+                    $("#dataTable tbody").empty();
+
+                    // Проходимось по кожному елементу отриманих даних
+                    $.each(data, function(index, item) {
+                        let row = `<tr>
+                            <td>${item.id || '-'}</td>
+                            <td>${item.name}</td>
+                            <td>${item.affiliation}</td>
+                            <td>${item.rank || '-'}</td>
+                        </tr>`;
+                        $("#dataTable tbody").append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    alert("Помилка завантаження даних! (Можливо, проблема з http/https змішаним контентом)");
+                    console.error(error);
+                }
+            });
+        }
+
+        // Прив'язка подій до кнопок
+        $(document).ready(function() {
+            // 1. Звичайне завантаження
+            $("#loadBtn").click(function() {
+                loadData();
+            });
+
+            // 2. Сортування за ім'ям 
+            $("#sortNameBtn").click(function() {
+                loadData("name"); // передаємо параметр 'name'
+            });
+
+            // 3. Сортування за фракцією 
+            $("#sortAffBtn").click(function() {
+                loadData("affiliation"); // передаємо параметр 'affiliation'
+            });
+        });
+    </script>
+</body>
+</html>

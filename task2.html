@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Завдання 2 - Жарти</title>
+</head>
+<body>
+    <h1>Генератор жартів (AJAX)</h1>
+    <button id="loadJokeBtn">Отримати жарт</button>
+    <div id="jokeContainer" style="margin-top: 20px; font-style: italic; color: blue;">
+        Тут з'явиться жарт...
+    </div>
+
+    <script>
+        document.getElementById('loadJokeBtn').addEventListener('click', loadJoke);
+
+        function loadJoke() {
+            // 1. Створюємо об'єкт XMLHttpRequest 
+            var xhttp = new XMLHttpRequest();
+
+            // 2. Налаштовуємо обробку відповіді 
+            xhttp.onreadystatechange = function() {
+                // Перевіряємо статус: 4 = готово, 200 = ОК 
+                if (this.readyState == 4 && this.status == 200) {
+                    // Отримуємо весь текст файлу
+                    var allText = this.responseText;
+                    // Розбиваємо текст на масив рядків (по ентеру)
+                    var jokesArray = allText.split('\n');
+                    // Вибираємо випадковий індекс
+                    var randomIndex = Math.floor(Math.random() * jokesArray.length);
+                    // Виводимо на сторінку 
+                    document.getElementById("jokeContainer").innerText = jokesArray[randomIndex];
+                }
+            };
+
+            // 3. Відкриваємо з'єднання (GET запит до файлу jokes.txt) 
+            xhttp.open("GET", "jokes.txt", true);
+
+            // 4. Відправляємо запит 
+            xhttp.send();
+        }
+    </script>
+</body>
+</html>
